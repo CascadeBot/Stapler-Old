@@ -1,0 +1,152 @@
+# Just a string
+scalar UUID
+
+enum Locale {
+  ENGLISH_UK
+  ENGLISH_US
+}
+
+enum Module {
+  CORE
+  MANAGEMENT
+  MUSIC
+  INFORMATIONAL
+  MODERATION
+  FUN
+  DEVELOPER
+}
+
+enum PatreonTier {
+  FREE
+  TIERONE
+  TIERTWO
+  TIERTHREE
+}
+
+enum Flag {
+  BETA
+  SPOTIFY
+  MUSIC_SERVICES
+}
+
+type DiscordRole {
+  id: String!
+  name: String!
+  color: Int
+}
+
+type DiscordUser {
+  id: UUID!
+  username: String!
+  discriminator: Int!
+  email: String
+  iconUrl: String
+}
+
+type Tag {
+  id: UUID!
+  name: String!
+  content: String!
+  category: String
+}
+
+type GuildPermissions {
+  Groups: [PermissionGroup!]
+  Users: [PermissionUser!]
+}
+
+type PermissionGroup {
+  id: UUID!
+  name: String!
+  roles: [UUID!]
+  permissions: [String!]
+}
+
+type PermissionUser {
+  id: UUID!
+  groups: [PermissionGroup!]
+  permissions: [String!]
+}
+
+type GuildSettings {
+  locale: Locale!
+  mentionPrefix: Boolean!
+  deleteCommand: Boolean!
+  useEmbedForMessages: Boolean!
+  showPermErrors: Boolean!
+  showModuleErrors: Boolean!
+  adminsHaveAllPerms: Boolean!
+  allowTagCommand: Boolean!
+  helpHideCommandsNoPerm: Boolean!
+  helpShowAllModules: Boolean!
+  purgePinnedMessages: Boolean!
+  prefix: String!
+}
+
+type GuildMeta {
+  ownerID: UUID!
+  iconURL: String
+  name: String!
+  memberCount: Int!
+  roles: [DiscordRole!]!
+}
+
+type GuildData {
+  id: UUID!
+  Settings: GuildSettings!
+  Meta: GuildMeta!
+  Tags: [Tag!]
+  Permissions: GuildPermissions!
+  EnabledModules: [Module!]
+  EnabledFlags: [Flag!]
+}
+
+type PatreonInfo {
+  linked: Boolean!
+  tier: PatreonTier!
+}
+
+type CascadeUser {
+  Discord: DiscordUser!
+  Patreon: PatreonInfo!
+  Guilds: [GuildMeta!]
+}
+
+type Query {
+  Guild(id: UUID!): GuildData
+  FindUser(id: UUID!, needle: String!): [DiscordUser!]
+  Guilds: [GuildData!]
+  Me: CascadeUser
+}
+
+input GuildSettingsInput {
+  locale: Locale!
+  mentionPrefix: Boolean!
+  deleteCommand: Boolean!
+  useEmbedForMessages: Boolean!
+  showPermErrors: Boolean!
+  showModuleErrors: Boolean!
+  adminsHaveAllPerms: Boolean!
+  allowTagCommand: Boolean!
+  helpHideCommandsNoPerm: Boolean!
+  helpShowAllModules: Boolean!
+  purgePinnedMessages: Boolean!
+  prefix: String!
+}
+
+input TagInput {
+  id: String!
+  name: String!
+  content: String!
+  category: String
+}
+
+input UpdateTagInput {
+  tags: [TagInput!]
+  remove: [String!]
+}
+
+type Mutation {
+  UpdateGuildSettings(id: UUID!, input: GuildSettingsInput!): GuildSettings!
+  UpdateTags(guildID: UUID!, input: UpdateTagInput!): [Tag!]
+}
