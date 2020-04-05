@@ -9,10 +9,9 @@ passport.use(
         callbackURL: process.env.HOST_ORIGIN + "login/cb",
         scope: ['identify', 'email', 'guilds']
     },
-    function (accessToken, refreshToken, profile, cb) {
-        if (err) return done(err);
+    function (accessToken, refreshToken, profile, done) {
         console.log("User:", profile.username, profile.discriminator);
-        done({
+        done(null, {
             username: "123",
             discrimination: "#234"
         });
@@ -21,11 +20,11 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-    done(1);
+    done(null, "1");
 });
 
 passport.deserializeUser((id, done) => {
-    done({
+    done(null, {
         username: "123",
         discrimination: "#234"
     });

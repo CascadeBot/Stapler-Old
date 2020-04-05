@@ -1,30 +1,46 @@
 const { GraphQLServer } = require("graphql-yoga");
-const routes = require("./routes");
 const resolvers = require("./graphql/resolvers");
 
-const isLoggedIn = async (resolve, parent, args, ctx, info) => {
-  if (false) {
-    throw new Error(`Not authorised!`);
-  }
+const session = require('express-session')
+const passport = require("passport");
+require("./auth/passport.js");
 
-  return resolve();
+const isLoggedIn = async (resolve, parent, args, ctx, info) => {
+    if (false) {
+        throw new Error(`Not authorised!`);
+    }
+    
+    return resolve();
 };
 
 const permissions = {
-  Query: {
-    Me: isLoggedIn,
-  },
+    Query: {
+        Me: isLoggedIn,
+    },
 };
 
 const server = new GraphQLServer({
-  typeDefs: `${__dirname}/graphql/schema.graphql`,
-  resolvers,
-  middlewares: [permissions],
-  context: (req) => {
-    return {};
-  },
+    typeDefs: `${__dirname}/graphql/schema.graphql`,
+    resolvers,
+    middlewares: [permissions],
+    context: (req) => {
+        return {};
+    },
 });
 
+server.express.use(session({
+    secret: 'keyboard cat', // temp
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false, // temp
+        maxAge: 3600000
+    }
+}))
+server.express.use(passport.initialize());
+server.express.use(passport.session());
+
+const routes = require("./routes");
 server.express.use(routes);
 server.start(
   {
