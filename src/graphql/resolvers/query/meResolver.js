@@ -8,6 +8,10 @@ module.exports = async (_parent, _args, { user }) => {
             avatar: user.avatar,
             discriminator: user.discriminator,
             id: user._id
+        },
+        Patreon: {
+            linked: true,
+            tier: "FREE"
         }
     }
 }

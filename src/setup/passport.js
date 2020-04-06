@@ -10,9 +10,11 @@ function setupLogin(app) {
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
+        name: 'dash.login',
+        rolling: true, // reset cookie expiry every request
         cookie: {
             secure: isProduction(),
-            maxAge: 3600000
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
         },
         store: new MongoStore({
             client: getDB().client,

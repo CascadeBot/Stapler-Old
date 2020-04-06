@@ -6,10 +6,11 @@ const requiredConfigKeys = [
     "DB_NAME",
     "DB_COLLECTION_USER",
     "DB_COLLECTION_SESSION",
-    "DB_COLLECTION_BOT",
+    "DB_COLLECTION_GUILD",
     "SESSION_SECRET",
     "LOGIN_FAILURE_REDIRECT",
-    "LOGIN_SUCCESS_REDIRECT"
+    "LOGIN_SUCCESS_REDIRECT",
+    "DISCORD_TOKEN"
 ]
 
 function checkString(str, key) {

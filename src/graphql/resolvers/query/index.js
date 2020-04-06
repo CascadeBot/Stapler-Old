@@ -1,5 +1,7 @@
-const MeResolver = require("./meResolver")
+const meResolver = require("./meResolver")
+const guildResolver = require("./guildResolver")
 
 module.exports = {
-    Me: MeResolver
+    Me: meResolver,
+    Guild: guildResolver,
 }

@@ -17,7 +17,7 @@ class Database {
                 this.db = client.db(process.env.DB_NAME);
                 this.users = this.db.collection(process.env.DB_COLLECTION_USER);
                 this.sessions = this.db.collection(process.env.DB_COLLECTION_SESSION);
-                this.bot = this.db.collection(process.env.DB_COLLECTION_BOT);
+                this.guilds = this.db.collection(process.env.DB_COLLECTION_GUILD);
 
                 resolve(this);
             });

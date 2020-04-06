@@ -7,7 +7,6 @@ const { setupRoutes, serverOptions } = require("./setup/server");
 const { setupGraphqlServer } = require("./setup/graphql");
 
 async function init() {
-    readConfig();
     await setupDB();
     const server = setupGraphqlServer();
     const app = server.express;

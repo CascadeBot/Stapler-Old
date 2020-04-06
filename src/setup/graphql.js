@@ -1,4 +1,5 @@
 const { GraphQLServer } = require("graphql-yoga");
+const { discord } = require("../helpers/discord");
 const { getDB } = require("./db");
 const resolvers = require("../graphql/resolvers");
 
@@ -25,7 +26,8 @@ function setupGraphqlServer() {
             return {
                 req: req.request,
                 db: getDB(),
-                user: req.request.user
+                user: req.request.user,
+                discord,
             };
         },
     });

@@ -44,7 +44,6 @@ type DiscordUser {
 }
 
 type Tag {
-  id: UUID!
   name: String!
   content: String!
   category: String
@@ -76,14 +75,15 @@ type GuildSettings {
   showPermErrors: Boolean!
   showModuleErrors: Boolean!
   adminsHaveAllPerms: Boolean!
-  allowTagCommand: Boolean!
-  helpHideCommandsNoPerm: Boolean!
+  allowTagCommands: Boolean!
+  helpHideCommandsNoPermission: Boolean!
   helpShowAllModules: Boolean!
   purgePinnedMessages: Boolean!
   prefix: String!
 }
 
 type GuildMeta {
+  id: UUID!
   ownerID: UUID!
   iconURL: String
   name: String!
