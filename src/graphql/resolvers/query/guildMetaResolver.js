@@ -7,7 +7,7 @@ module.exports = async (parent, _args, { discord }) => {
     ownerID: discordGuild.owner_id,
     iconURL: discordGuild.icon,
     name: discordGuild.name,
-    memberCount: -1337,
+    memberCount: -1337, // temp
     roles: discordGuild.roles.map((role) => ({
       id: role.id,
       name: role.name,
