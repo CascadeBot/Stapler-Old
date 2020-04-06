@@ -38,9 +38,9 @@ type DiscordRole {
 type DiscordUser {
   id: UUID!
   username: String!
-  discriminator: Int!
+  discriminator: String!
   email: String
-  iconUrl: String
+  avatar: String
 }
 
 type Tag {
@@ -107,6 +107,7 @@ type PatreonInfo {
 }
 
 type CascadeUser {
+  id: UUID!
   Discord: DiscordUser!
   Patreon: PatreonInfo!
   Guilds: [GuildMeta!]

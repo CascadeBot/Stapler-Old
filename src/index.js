@@ -1,54 +1,31 @@
-const { GraphQLServer } = require("graphql-yoga");
-const resolvers = require("./graphql/resolvers");
+const { readConfig } = require("./helpers/config");
+readConfig();
 
-const session = require('express-session')
-const passport = require("passport");
-require("./auth/passport.js");
+const { setupLogin } = require("./setup/passport");
+const { setupDB } = require("./setup/db");
+const { setupRoutes, serverOptions } = require("./setup/server");
+const { setupGraphqlServer } = require("./setup/graphql");
 
-const isLoggedIn = async (resolve, parent, args, ctx, info) => {
-    if (false) {
-        throw new Error(`Not authorised!`);
-    }
-    
-    return resolve();
-};
+async function init() {
+    readConfig();
+    await setupDB();
+    const server = setupGraphqlServer();
+    const app = server.express;
 
-const permissions = {
-    Query: {
-        Me: isLoggedIn,
-    },
-};
+    setupLogin(app);
+    setupRoutes(app);
+    server.use((req, res, next) => {
+        if (req.path.startsWith(serverOptions.endpoint)) return next();
+        res.status(404).json({
+          error: "endpoint not found"
+        });
+    })
+    server.start(
+        serverOptions,
+        () => console.log(`Server is running on localhost:${serverOptions.port}`)
+    );
+}
 
-const server = new GraphQLServer({
-    typeDefs: `${__dirname}/graphql/schema.graphql`,
-    resolvers,
-    middlewares: [permissions],
-    context: (req) => {
-        return {};
-    },
+init().catch((reason) => {
+    console.error(reason);
 });
-
-server.express.use(session({
-    secret: 'keyboard cat', // temp
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: false, // temp
-        maxAge: 3600000
-    }
-}))
-server.express.use(passport.initialize());
-server.express.use(passport.session());
-
-const routes = require("./routes");
-server.express.use(routes);
-server.start(
-  {
-    port: process.env.PORT || 4000,
-    endpoint: "/graphql",
-    playground: process.env.NODE_ENV === "production" ? false : "/__graphql",
-    uploads: false,
-  },
-  () =>
-    console.log(`Server is running on localhost:${process.env.PORT || 4000}`)
-);
