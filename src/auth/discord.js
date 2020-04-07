@@ -1,11 +1,12 @@
 const { getDB } = require("../setup/db");
+const { discord: discordConfig, login: loginConfig } = require("../helpers/config");
 const DiscordStrategy = require("passport-discord").Strategy;
 
 const discordStrategy = new DiscordStrategy(
     {
-        clientID: process.env.DISCORD_CLIENTID,
-        clientSecret: process.env.DISCORD_CLIENTSECRET,
-        callbackURL: process.env.HOST_ORIGIN + "login/cb",
+        clientID: discordConfig.client_id,
+        clientSecret: discordConfig.client_secret,
+        callbackURL: loginConfig.host_origin + "/auth/login/cb",
         scope: ['identify', 'email', 'guilds']
     },
     function (accessToken, refreshToken, profile, done) {
@@ -17,8 +18,12 @@ const discordStrategy = new DiscordStrategy(
                     discriminator: profile.discriminator,
                     avatar: profile.avatar,
                     email: profile.email,
-                    accessToken, // temp, maybe encrypt the tokens?
+                    accessToken, // temp, maybe encrypt the tokens? (maybe not, only has access to email and identity)
                     refreshToken,
+                    patreon: {
+                        isLinkedPatreon: false,
+                        tier: "FREE"
+                    }
                 }
             },
             {

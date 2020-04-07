@@ -1,6 +1,3 @@
-const { readConfig } = require("./helpers/config");
-readConfig();
-
 const { setupLogin } = require("./setup/passport");
 const { setupDB } = require("./setup/db");
 const { setupRoutes, serverOptions } = require("./setup/server");

@@ -2,23 +2,25 @@ const passport = require("passport");
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const { isProduction } = require("../helpers/utils");
+const { login: loginConfig, mongo: mongoConfig } = require("../helpers/config");
 const { getDB } = require("./db");
 const { discordStrategy, discordSerialize, discordDeserialize } = require('../auth/discord.js');
 
 function setupLogin(app) {
     const sessionOptions = {
-        secret: process.env.SESSION_SECRET,
+        secret: loginConfig.session_secret,
         resave: false,
         saveUninitialized: true,
-        name: 'dash.login',
+        name: loginConfig.cookie_name,
         rolling: true, // reset cookie expiry every request
         cookie: {
             secure: isProduction(),
-            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+            maxAge: loginConfig.cookie_maxage
         },
         store: new MongoStore({
             client: getDB().client,
-            dbName: process.env.DB_NAME
+            dbName: mongoConfig.db_name,
+            collection: mongoConfig.collections.sessions
         })
     };
 

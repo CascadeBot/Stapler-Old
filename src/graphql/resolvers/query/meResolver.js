@@ -10,8 +10,8 @@ module.exports = async (_parent, _args, { user }) => {
             id: user._id
         },
         Patreon: {
-            linked: true,
-            tier: "FREE"
+            linked: user.patreon.isLinkedPatreon,
+            tier: user.patreon.tier,
         }
     }
 }

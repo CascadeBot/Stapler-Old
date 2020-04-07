@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const { mongo: mongoConfig } = require('../helpers/config');
 
 class Database {
     constructor(url) {
@@ -14,10 +15,10 @@ class Database {
                 if (err) return reject("Failed to connect to Mongodb");
                 console.log("Connected successfully to server");
     
-                this.db = client.db(process.env.DB_NAME);
-                this.users = this.db.collection(process.env.DB_COLLECTION_USER);
-                this.sessions = this.db.collection(process.env.DB_COLLECTION_SESSION);
-                this.guilds = this.db.collection(process.env.DB_COLLECTION_GUILD);
+                this.db = client.db(mongoConfig.db_name);
+                this.users = this.db.collection(mongoConfig.collections.users);
+                this.sessions = this.db.collection(mongoConfig.collections.sessions);
+                this.guilds = this.db.collection(mongoConfig.collections.guilds);
 
                 resolve(this);
             });
@@ -32,7 +33,7 @@ function getDB() {
 }
 
 async function setupDB() {
-    database = new Database(process.env.MONGO_CONNECTION_STRING);
+    database = new Database(mongoConfig.connection_string);
     await database.connect();
 }
 

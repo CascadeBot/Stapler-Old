@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const { login: loginConfig } = require("../helpers/config");
 
 router.get('/login', passport.authenticate('discord'));
 router.get(
   "/login/cb",
   passport.authenticate("discord", {
-    failureRedirect: process.env.LOGIN_FAILURE_REDIRECT,
+    failureRedirect: loginConfig.redirects.failure,
   }), (req, res) => {
-    res.redirect(process.env.LOGIN_SUCCESS_REDIRECT);
+    res.redirect(loginConfig.redirects.success);
   }
 );
 

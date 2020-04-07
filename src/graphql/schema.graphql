@@ -29,6 +29,11 @@ enum Flag {
   MUSIC_SERVICES
 }
 
+enum PermissionMode {
+  HIERARCHICAL
+  MOST_RESTRICTIVE
+}
+
 type DiscordRole {
   id: String!
   name: String!
@@ -50,6 +55,7 @@ type Tag {
 }
 
 type GuildPermissions {
+  mode: String!
   Groups: [PermissionGroup!]
   Users: [PermissionUser!]
 }

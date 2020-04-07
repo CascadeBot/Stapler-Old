@@ -8,27 +8,52 @@ module.exports = async (_parent, { id }, { db }) => {
     Tags: getTags(guild),
     EnabledModules: guild.coreSettings.enabledModules,
     EnabledFlags: guild.enabledFlags,
+    Permissions: getPermissions(guild)
   };
 };
 
-const getSettings = (guild) => ({
-  locale: guild.locale,
-  mentionPrefix: guild.coreSettings.mentionPrefix,
-  deleteCommand: guild.coreSettings.deleteCommand,
-  useEmbedForMessages: guild.coreSettings.useEmbedForMessages,
-  showPermErrors: guild.coreSettings.showPermErrors,
-  showModuleErrors: guild.coreSettings.showModuleErrors,
-  adminsHaveAllPerms: guild.coreSettings.adminsHaveAllPerms,
-  allowTagCommands: guild.coreSettings.allowTagCommands,
-  helpHideCommandsNoPermission: guild.coreSettings.helpHideCommandsNoPermission,
-  helpShowAllModules: guild.coreSettings.helpShowAllModules,
-  prefix: guild.coreSettings.prefix,
-  purgePinnedMessages: guild.guildModeration.purgePinnedMessages,
+const getPermissionGroups = (groups) => (
+  groups.map(({id, name, roleIds, permissions}) => ({
+    id,
+    name,
+    permissions,
+    roles: roleIds,
+  }))
+)
+
+const getPermissions = ({guildPermissions}) => {
+  const groups = getPermissionGroups(guildPermissions.groups)
+  const groupMap = new Map()
+  groups.forEach(group => {
+    groupMap.set(group.id, group)
+  })
+  return {
+    mode: guildPermissions.mode,
+    Groups: groups,
+    Users: guildPermissions.users.map(({key, value}) => ({
+      id: key,
+      groups: value.groups.map(key => (groupMap.get(key))),
+      permissions: value.permissions
+    }))
+  }
+}
+
+const getSettings = ({locale, coreSettings, guildModeration}) => ({
+  locale: locale,
+  mentionPrefix: coreSettings.mentionPrefix,
+  deleteCommand: coreSettings.deleteCommand,
+  useEmbedForMessages: coreSettings.useEmbedForMessages,
+  showPermErrors: coreSettings.showPermErrors,
+  showModuleErrors: coreSettings.showModuleErrors,
+  adminsHaveAllPerms: coreSettings.adminsHaveAllPerms,
+  allowTagCommands: coreSettings.allowTagCommands,
+  helpHideCommandsNoPermission: coreSettings.helpHideCommandsNoPermission,
+  helpShowAllModules: coreSettings.helpShowAllModules,
+  prefix: coreSettings.prefix,
+  purgePinnedMessages: guildModeration.purgePinnedMessages,
 });
 
-function getTags(guild) {
-  const { tags } = guild.coreSettings;
-
+function getTags({coreSettings: {tags}}) {
   return Object.keys(tags).map((key) => ({
     name: key,
     content: tags[key].content,

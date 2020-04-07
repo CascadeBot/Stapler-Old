@@ -1,17 +1,18 @@
 const { isProduction } = require("../helpers/utils");
-const routes = require("../routes");
+const { server: serverConfig } = require("../helpers/config");
+const authRouter = require("../routes/auth");
+const patreonRouter = require("../routes/patreon");
 
 const serverOptions = {
-    port: process.env.PORT || 4000,
+    port: serverConfig.port,
     endpoint: "/graphql",
     playground: isProduction() ? false : "/graphql",
     uploads: false
 }
 
 function setupRoutes(app) {
-    for (let key in routes) {
-        app.use(routes[key]);
-    }
+    app.use('/auth', authRouter);
+    app.use('/patreon', patreonRouter);
 }
 
 module.exports = {
