@@ -3,11 +3,16 @@ const { setupDB } = require("./setup/db");
 const { setupRoutes, serverOptions } = require("./setup/server");
 const { setupGraphqlServer } = require("./setup/graphql");
 
+
+// temp
+const { testWebhook } = require("./models/patreon");
+
 async function init() {
     await setupDB();
     const server = setupGraphqlServer();
     const app = server.express;
 
+    testWebhook(2); // temp
     setupLogin(app);
     setupRoutes(app);
     server.use((req, res, next) => {

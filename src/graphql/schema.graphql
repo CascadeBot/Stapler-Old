@@ -16,11 +16,12 @@ enum Module {
   DEVELOPER
 }
 
+# temp lowercase
 enum PatreonTier {
-  FREE
-  TIERONE
-  TIERTWO
-  TIERTHREE
+  default
+  cheap
+  medium
+  hardcode
 }
 
 enum Flag {

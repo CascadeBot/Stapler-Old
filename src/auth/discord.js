@@ -1,4 +1,5 @@
 const { getDB } = require("../setup/db");
+const { tierEnum } = require("../models/patreon");
 const { discord: discordConfig, login: loginConfig } = require("../helpers/config");
 const DiscordStrategy = require("passport-discord").Strategy;
 
@@ -14,16 +15,18 @@ const discordStrategy = new DiscordStrategy(
             { _id: profile.id },
             {
                 $setOnInsert: {
+                    patreon: {
+                        isLinkedPatreon: false,
+                        tier: tierEnum.default
+                    }
+                },
+                $set: {
                     username: profile.username,
                     discriminator: profile.discriminator,
                     avatar: profile.avatar,
                     email: profile.email,
-                    accessToken, // temp, maybe encrypt the tokens? (maybe not, only has access to email and identity)
+                    accessToken,
                     refreshToken,
-                    patreon: {
-                        isLinkedPatreon: false,
-                        tier: "FREE"
-                    }
                 }
             },
             {

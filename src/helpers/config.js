@@ -19,6 +19,7 @@ const configTemplate = {
         db_name: null, // database name
         collections: {
             users: "users", // collection name for the dashboard user collection
+            patrons: "patrons", // collection name for the patreon donators collection
             sessions: "sessions", // collection name for the login sessions collection
             guilds: "guilds", // collection name for the guilds collection, has to be the same as the bot
         }
@@ -48,6 +49,11 @@ const configTemplate = {
         webhook: {
             identifier: null, // patreon webhook identifier, used for webhook endpoint: `/patreon/webhook/{identifier}`
             secret: null // patreon webhook secret, used for verifying if patreon is origin
+        },
+        tiers: {
+            cheap: null, // cheap tier identifier
+            medium: null, // medium tier identifier
+            hardcode: null // hardcode tier identifier
         }
     },
     server: {
@@ -77,7 +83,7 @@ function verifyConfigObject(path, template, obj) {
     for (let key of keys) {
         if (template[key] === null) {
             if (typeof obj[key] === "undefined")
-                throwConfigError(path, key, "any", "undefined");
+                throwConfigError(path, key, "variable", "undefined");
             setPathedConfigValue(path, key, obj[key]);
         }
         else if (typeof template[key] === "object") {

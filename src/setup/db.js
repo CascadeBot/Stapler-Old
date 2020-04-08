@@ -14,11 +14,12 @@ class Database {
                 this.client = client;
                 if (err) return reject("Failed to connect to Mongodb");
                 console.log("Connected successfully to server");
-    
+
                 this.db = client.db(mongoConfig.db_name);
                 this.users = this.db.collection(mongoConfig.collections.users);
                 this.sessions = this.db.collection(mongoConfig.collections.sessions);
                 this.guilds = this.db.collection(mongoConfig.collections.guilds);
+                this.patrons = this.db.collection(mongoConfig.collections.patrons);
 
                 resolve(this);
             });
