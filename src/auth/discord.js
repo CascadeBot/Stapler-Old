@@ -1,4 +1,5 @@
 const { getDB } = require("../setup/db");
+const { Long } = require("mongodb");
 const { tierEnum } = require("../models/patreon");
 const { discord: discordConfig, login: loginConfig } = require("../helpers/config");
 const DiscordStrategy = require("passport-discord").Strategy;
@@ -12,7 +13,7 @@ const discordStrategy = new DiscordStrategy(
     },
     function (accessToken, refreshToken, profile, done) {
         getDB().users.findOneAndUpdate(
-            { _id: profile.id },
+            { _id: Long.fromString(profile.id) },
             {
                 $setOnInsert: {
                     patreon: {
@@ -43,12 +44,12 @@ const discordStrategy = new DiscordStrategy(
 );
 
 function discordSerialize(user, done) {
-    done(null, user._id);
+    done(null, user._id.toString());
 }
 
 function discordDeserialize(id, done) {
     getDB().users.findOne(
-        { _id: id },
+        { _id: Long.fromString(id) },
         (err, res) => {
             if (err) return done(err);
             done(null, res);

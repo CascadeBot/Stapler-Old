@@ -20,6 +20,10 @@ has playground if not in production
 **(needs auth)**
 initializes patreon Oauth flow
 
+#### /patreon/unlink
+**(needs auth)**
+unlinks patreon account from discord account
+
 #### /patreon/link/cb
 **(needs auth)**
 callback for patreon Oauth flow

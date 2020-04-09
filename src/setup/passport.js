@@ -5,6 +5,7 @@ const { isProduction } = require("../helpers/utils");
 const { login: loginConfig, mongo: mongoConfig } = require("../helpers/config");
 const { getDB } = require("./db");
 const { discordStrategy, discordSerialize, discordDeserialize } = require('../auth/discord.js');
+const refresh = require('passport-oauth2-refresh');
 
 function setupLogin(app) {
     const sessionOptions = {
@@ -26,6 +27,7 @@ function setupLogin(app) {
 
     // setup login strategy
     passport.use(discordStrategy);
+    refresh.use(discordStrategy);
     passport.serializeUser(discordSerialize);
     passport.deserializeUser(discordDeserialize);
 

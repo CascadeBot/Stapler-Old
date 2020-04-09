@@ -16,6 +16,11 @@ router.get('/link', isAuthenticated, (req, res) => {
     res.redirect(Patreon.getLink());
 });
 
+router.get('/unlink', isAuthenticated, async (req, res) => {
+    await Patreon.unlinkAccount(req.user._id.toString());
+    res.redirect('/graphql'); // redirect to ui
+});
+
 router.get('/link/cb', isAuthenticated, async (req, res) => {
     const {code} = req.query;
     if (!code)
@@ -25,7 +30,7 @@ router.get('/link/cb', isAuthenticated, async (req, res) => {
     try {
         tokens = await Patreon.getTokens(code);
         patreonUser = await Patreon.getIdentity(tokens.access_token);
-        await Patreon.linkAccount(tokens, patreonUser.data.id, req.user._id);
+        await Patreon.linkAccount(tokens, patreonUser.data.id, req.user._id.toString());
     } catch (e) {
         console.error(e); // temp
         return res.redirect(Patreon.getLink()); // TODO: Redirect to ui

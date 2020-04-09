@@ -1,7 +1,9 @@
 const { URLSearchParams } = require('url');
 const { getDB } = require('../../setup/db');
+const { Long } = require('mongodb');
 const { login: loginConfig, patreon: patreonConfig } = require('../../helpers/config');
-const { getHighestTier } = require('./tier');
+const { getHighestTier, tierEnum } = require('./tier');
+const { correctGuildSupporter } = require('./webhook');
 const got = require('got');
 
 const patreonOauthUrl = patreonConfig.auth_url;
@@ -42,7 +44,7 @@ async function linkAccount(tokens, patreon_id, discordId) {
     }
     const tier = getHighestTier(patron.tiers);
     await getDB().users.findOneAndUpdate(
-        { _id: discordId },
+        { _id: Long.fromString(discordId) },
         {
             $set: {
                 'patreon.isLinkedPatreon': true,
@@ -53,12 +55,25 @@ async function linkAccount(tokens, patreon_id, discordId) {
             }
         }
     );
-    // TODO update guild supporters array (TRIGGER SUPPORTERS REFRESH)
+    await correctGuildSupporter(discordId);
 }
 
-async function unlinkAccount(tokens, patreon_id, discordId) {
-    // TODO remove patreon link from user
-    // TODO update guild supporters array (TRIGGER SUPPORTERS REFRESH)
+async function unlinkAccount(discordId) {
+    await getDB().users.findOneAndUpdate(
+        { _id: Long.fromString(discordId) },
+        {
+            $set: {
+                'patreon.isLinkedPatreon': false,
+                'patreon.tier': tierEnum.default
+            },
+            $unset: {
+                'patreon.access_token': "",
+                'patreon.refresh_token': "",
+                'patreon.id': "",
+            }
+        }
+    );
+    await correctGuildSupporter(discordId);
 }
 
 module.exports = {
