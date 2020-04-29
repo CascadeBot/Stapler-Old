@@ -7,7 +7,11 @@ const serverOptions = {
     port: serverConfig.port,
     endpoint: "/graphql",
     playground: isProduction() ? false : "/graphql",
-    uploads: false
+    uploads: false,
+    cors: {
+        credentials: true,
+        origin: serverConfig.domains
+    }
 }
 
 function setupRoutes(app) {

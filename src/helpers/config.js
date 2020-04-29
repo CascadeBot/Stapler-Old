@@ -57,7 +57,8 @@ const configTemplate = {
         }
     },
     server: {
-        port: 4000 // port to host the webserver on
+        port: 4000, // port to host the webserver on
+        domains: null // cors domains
     },
     env: "development" // what environment to run in, can also be `production`
 }
