@@ -20,7 +20,7 @@ function setupLogin(app) {
         },
         store: new MongoStore({
             client: getDB().client,
-            dbName: mongoConfig.db_name,
+            db_name: mongoConfig.db_name,
             collection: mongoConfig.collections.sessions
         })
     };

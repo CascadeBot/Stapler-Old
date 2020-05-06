@@ -1,9 +1,13 @@
 const { GraphQLServer } = require("graphql-yoga");
-const { discord } = require("../helpers/discord");
 const { getDB } = require("./db");
+const { DiscordBot } = require("discord-user-js");
+const { discord: discordConfig } = require("../helpers/config");
 const resolvers = require("../graphql/resolvers");
 
-function setupGraphqlServer() {
+async function setupGraphqlServer() {
+    const botClient = new DiscordBot(discordConfig.bot_token);
+    await botClient.setup();
+
     const isLoggedIn = async (resolve, parent, args, ctx, info) => {
         if (!ctx.req.user) {
             throw new Error(`Not authorised!`);
@@ -27,7 +31,7 @@ function setupGraphqlServer() {
                 req: req.request,
                 db: getDB(),
                 user: req.request.user,
-                discord,
+                botClient
             };
         },
     });

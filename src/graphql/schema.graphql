@@ -93,6 +93,7 @@ type GuildMeta {
   id: UUID!
   ownerID: UUID!
   iconURL: String
+  iconHash: String
   name: String!
   memberCount: Int!
   roles: [DiscordRole!]!

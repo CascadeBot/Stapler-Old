@@ -6,7 +6,7 @@ module.exports = async (_parent, { id }, { db }) => {
     id: guild._id,
     Settings: getSettings(guild),
     Tags: getTags(guild),
-    EnabledModules: guild.coreSettings.enabledModules,
+    EnabledModules: guild.core.enabledModules,
     EnabledFlags: guild.enabledFlags,
     Permissions: getPermissions(guild)
   };
@@ -21,16 +21,16 @@ const getPermissionGroups = (groups) => (
   }))
 )
 
-const getPermissions = ({guildPermissions}) => {
-  const groups = getPermissionGroups(guildPermissions.groups)
+const getPermissions = ({management: {permissions}}) => {
+  const groups = getPermissionGroups(permissions.groups)
   const groupMap = new Map()
   groups.forEach(group => {
     groupMap.set(group.id, group)
   })
   return {
-    mode: guildPermissions.mode,
+    mode: permissions.mode,
     Groups: groups,
-    Users: guildPermissions.users.map(({key, value}) => ({
+    Users: permissions.users.map(({key, value}) => ({
       id: key,
       groups: value.groups.map(key => (groupMap.get(key))),
       permissions: value.permissions
@@ -38,22 +38,22 @@ const getPermissions = ({guildPermissions}) => {
   }
 }
 
-const getSettings = ({locale, coreSettings, guildModeration}) => ({
-  locale: locale,
-  mentionPrefix: coreSettings.mentionPrefix,
-  deleteCommand: coreSettings.deleteCommand,
-  useEmbedForMessages: coreSettings.useEmbedForMessages,
-  showPermErrors: coreSettings.showPermErrors,
-  showModuleErrors: coreSettings.showModuleErrors,
-  adminsHaveAllPerms: coreSettings.adminsHaveAllPerms,
-  allowTagCommands: coreSettings.allowTagCommands,
-  helpHideCommandsNoPermission: coreSettings.helpHideCommandsNoPermission,
-  helpShowAllModules: coreSettings.helpShowAllModules,
-  prefix: coreSettings.prefix,
-  purgePinnedMessages: guildModeration.purgePinnedMessages,
+const getSettings = ({core, moderation, management}) => ({
+  locale: core.locale,
+  mentionPrefix: core.mentionPrefix,
+  deleteCommand: core.deleteCommand,
+  useEmbedForMessages: core.useEmbedForMessages,
+  showPermErrors: core.showPermErrors,
+  showModuleErrors: core.showModuleErrors,
+  adminsHaveAllPerms: core.adminsHaveAllPerms,
+  allowTagCommands: management.allowTagCommands,
+  helpHideCommandsNoPermission: core.helpHideCommandsNoPermission,
+  helpShowAllModules: core.helpShowAllModules,
+  prefix: core.prefix,
+  purgePinnedMessages: moderation.purgePinnedMessages,
 });
 
-function getTags({coreSettings: {tags}}) {
+function getTags({management: {tags}}) {
   return Object.keys(tags).map((key) => ({
     name: key,
     content: tags[key].content,

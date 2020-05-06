@@ -2,8 +2,7 @@ const { URLSearchParams } = require('url');
 const { getDB } = require('../../setup/db');
 const { Long } = require('mongodb');
 const { login: loginConfig, patreon: patreonConfig } = require('../../helpers/config');
-const { getHighestTier, tierEnum } = require('./tier');
-const { correctGuildSupporter } = require('./webhook');
+const { tierEnum } = require('./tier');
 const got = require('got');
 
 const patreonOauthUrl = patreonConfig.auth_url;
@@ -35,15 +34,7 @@ async function getTokens(code) {
 }
 
 async function linkAccount(tokens, patreon_id, discordId) {
-    let patron = await getDB().patrons.findOne(
-        { _id: patreon_id }
-    );
-    if (!patron) {
-        patron = {};
-        patron.tiers = [];
-    }
-    const tier = getHighestTier(patron.tiers);
-    await getDB().users.findOneAndUpdate(
+    const user = await getDB().users.findOneAndUpdate(
         { _id: Long.fromString(discordId) },
         {
             $set: {
@@ -51,20 +42,29 @@ async function linkAccount(tokens, patreon_id, discordId) {
                 'patreon.access_token': tokens.access_token,
                 'patreon.refresh_token': tokens.refresh_token,
                 'patreon.id': patreon_id,
-                'patreon.tier': tier
+                'patreon.tier': tierEnum.default
             }
         }
     );
-    await correctGuildSupporter(discordId);
+    if (!user)
+        throw new Error("Failed linking");
+    const resp = await got.post(`${patreonConfig.service_url}/user/${discordId}/link/${patreon_id}`, {
+        responseType: 'json',
+        resolveBodyOnly: true,
+        headers: {
+            "Authorization": "Bearer " + patreonConfig.service_apikey
+        }
+    });
+    if (!resp.success)
+        throw new Error("Failed linking");
 }
 
 async function unlinkAccount(discordId) {
-    await getDB().users.findOneAndUpdate(
+    const user = await getDB().users.findOneAndUpdate(
         { _id: Long.fromString(discordId) },
         {
             $set: {
-                'patreon.isLinkedPatreon': false,
-                'patreon.tier': tierEnum.default
+                'patreon.isLinkedPatreon': false
             },
             $unset: {
                 'patreon.access_token': "",
@@ -73,7 +73,17 @@ async function unlinkAccount(discordId) {
             }
         }
     );
-    await correctGuildSupporter(discordId);
+    if (!user)
+        throw new Error("Failed linking");
+    const resp = await got.post(`${patreonConfig.service_url}/user/${discordId}/unlink`, {
+        responseType: 'json',
+        resolveBodyOnly: true,
+        headers: {
+            "Authorization": "Bearer " + patreonConfig.service_apikey
+        }
+    });
+    if (!resp.success)
+        throw new Error("Failed linking");
 }
 
 module.exports = {

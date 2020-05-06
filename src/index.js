@@ -5,7 +5,7 @@ const { setupGraphqlServer } = require("./setup/graphql");
 
 async function init() {
     await setupDB();
-    const server = setupGraphqlServer();
+    const server = await setupGraphqlServer();
     const app = server.express;
 
     setupLogin(app);

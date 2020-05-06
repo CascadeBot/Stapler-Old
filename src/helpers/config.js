@@ -39,6 +39,7 @@ const configTemplate = {
         client_id: null, // discord application client id, used for Oauth
         client_secret: null, // discord application client secret, used for Oauth
         bot_token: null, // discord bot token, used for extra guild information
+        scopes: ['identify', 'email', 'guilds']
     },
     patreon: {
         auth_url: "https://www.patreon.com/oauth2/authorize", // patreon oauth auth url
@@ -54,7 +55,9 @@ const configTemplate = {
             cheap: null, // cheap tier identifier
             medium: null, // medium tier identifier
             hardcode: null // hardcode tier identifier
-        }
+        },
+        service_apikey: null,
+        service_url: null
     },
     server: {
         port: 4000, // port to host the webserver on
@@ -87,7 +90,7 @@ function verifyConfigObject(path, template, obj) {
                 throwConfigError(path, key, "variable", "undefined");
             setPathedConfigValue(path, key, obj[key]);
         }
-        else if (typeof template[key] === "object") {
+        else if (typeof template[key] === "object" && !(template[key] instanceof Array)) {
             if (typeof obj[key] !== "object" || obj[key] === null)
                 throwConfigError(path, key, "object", typeof obj[key]);
             setPathedConfigValue(path, key, {});
