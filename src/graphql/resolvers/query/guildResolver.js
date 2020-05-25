@@ -1,17 +1,5 @@
 const { Long } = require("mongodb");
 
-module.exports = async (_parent, { id }, { db }) => {
-  const guild = await db.guilds.findOne({ _id: Long.fromString(id) });
-  return {
-    id: guild._id,
-    Settings: getSettings(guild),
-    Tags: getTags(guild),
-    EnabledModules: guild.core.enabledModules,
-    EnabledFlags: guild.enabledFlags,
-    Permissions: getPermissions(guild)
-  };
-};
-
 const getPermissionGroups = (groups) => (
   groups.map(({id, name, roleIds, permissions}) => ({
     id,
@@ -60,3 +48,24 @@ function getTags({management: {tags}}) {
     category: tags[key].category,
   }));
 }
+
+function makeGuildData(guild) {
+  return {
+    id: guild._id,
+    Settings: getSettings(guild),
+    Tags: getTags(guild),
+    EnabledModules: guild.core.enabledModules,
+    EnabledFlags: guild.enabledFlags,
+    Permissions: getPermissions(guild)
+  };
+}
+
+async function resolve(_parent, { id }, { db }) {
+  const guild = await db.guilds.findOne({ _id: Long.fromString(id) });
+  return makeGuildData(guild);
+}
+
+module.exports = {
+  resolve,
+  makeGuildData
+};

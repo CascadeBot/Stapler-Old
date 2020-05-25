@@ -1,18 +1,27 @@
-module.exports = async (parent, _args, { botClient }) => {
-  const id = parent.id.toString();
-
-  const { body: discordGuild } = await botClient.getGuild(id, true);
+function makeGuildMeta(guild) {
   return {
-    id: discordGuild.id,
-    ownerID: discordGuild.owner_id,
-    iconURL: discordGuild.icon ? `http://cdn.discordapp.com/icons/${discordGuild.id}/${discordGuild.icon}` : undefined,
-    iconHash: discordGuild.icon,
-    name: discordGuild.name,
-    memberCount: discordGuild.approximate_member_count,
-    roles: discordGuild.roles.map((role) => ({
+    id: guild.id,
+    ownerID: guild.owner_id,
+    iconURL: guild.icon ? `http://cdn.discordapp.com/icons/${guild.id}/${guild.icon}` : undefined,
+    iconHash: guild.icon,
+    name: guild.name,
+    memberCount: guild.approximate_member_count,
+    roles: guild.roles.map((role) => ({
       id: role.id,
       name: role.name,
       color: role.color,
     })),
   };
+}
+
+async function resolve(parent, _args, { botClient }) {
+  const id = parent.id.toString();
+
+  const { body: discordGuild } = await botClient.getGuild(id, true);
+  return makeGuildMeta(discordGuild);
+}
+
+module.exports = {
+  makeGuildMeta,
+  resolve
 };

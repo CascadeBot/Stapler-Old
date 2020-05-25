@@ -118,7 +118,6 @@ type CascadeUser {
   id: UUID!
   Discord: DiscordUser!
   Patreon: PatreonInfo!
-  Guilds: [GuildMeta!]
 }
 
 type Query {

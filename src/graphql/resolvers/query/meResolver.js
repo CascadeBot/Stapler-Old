@@ -1,5 +1,4 @@
-module.exports = async (_parent, _args, { user }) => {
-    if (!user) return null;
+function makeCascadeUser(user) {
     return {
         id: user._id,
         Discord: {
@@ -15,3 +14,14 @@ module.exports = async (_parent, _args, { user }) => {
         }
     }
 }
+
+async function resolve(_parent, _args, { user }) {
+    if (!user)
+        return null;
+    return makeCascadeUser(user);
+}
+
+module.exports = {
+    makeCascadeUser,
+    resolve
+};

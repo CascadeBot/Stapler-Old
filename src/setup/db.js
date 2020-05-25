@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { mongo: mongoConfig } = require('../helpers/config');
+const os = require("os");
 
 class Database {
     constructor(url) {
@@ -7,6 +8,8 @@ class Database {
             useUnifiedTopology: true
         });
     }
+
+
 
     connect() {
         return new Promise((resolve, reject) => {
