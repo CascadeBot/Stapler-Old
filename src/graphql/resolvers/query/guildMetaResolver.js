@@ -2,7 +2,7 @@ function makeGuildMeta(guild) {
   return {
     id: guild.id,
     ownerID: guild.owner_id,
-    iconURL: guild.icon ? `http://cdn.discordapp.com/icons/${guild.id}/${guild.icon}` : undefined,
+    iconURL: guild.icon ? `http://cdn.discordapp.com/icons/${guild.id}/${guild.icon}` : null,
     iconHash: guild.icon,
     name: guild.name,
     memberCount: guild.approximate_member_count,
