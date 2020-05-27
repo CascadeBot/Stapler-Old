@@ -62,10 +62,12 @@ function makeGuildData(guild) {
 
 async function resolve(_parent, { id }, { db }) {
   const guild = await db.guilds.findOne({ _id: Long.fromString(id) });
+  if (!guild) throw new Error("guildnotfound");
   return makeGuildData(guild);
 }
 
 module.exports = {
   resolve,
-  makeGuildData
+  makeGuildData,
+  makeGuildSettings: getSettings
 };

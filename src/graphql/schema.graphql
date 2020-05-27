@@ -128,18 +128,18 @@ type Query {
 }
 
 input GuildSettingsInput {
-  locale: Locale!
-  mentionPrefix: Boolean!
-  deleteCommand: Boolean!
-  useEmbedForMessages: Boolean!
-  showPermErrors: Boolean!
-  showModuleErrors: Boolean!
-  adminsHaveAllPerms: Boolean!
-  allowTagCommand: Boolean!
-  helpHideCommandsNoPerm: Boolean!
-  helpShowAllModules: Boolean!
-  purgePinnedMessages: Boolean!
-  prefix: String!
+  locale: Locale
+  mentionPrefix: Boolean
+  deleteCommand: Boolean
+  useEmbedForMessages: Boolean
+  showPermErrors: Boolean
+  showModuleErrors: Boolean
+  adminsHaveAllPerms: Boolean
+  allowTagCommand: Boolean
+  helpHideCommandsNoPerm: Boolean
+  helpShowAllModules: Boolean
+  purgePinnedMessages: Boolean
+  prefix: String
 }
 
 input TagInput {
