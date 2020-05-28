@@ -47,6 +47,7 @@ type DiscordUser {
   discriminator: String!
   email: String
   avatar: String
+  avatarURL: String
 }
 
 type Tag {
