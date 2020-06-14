@@ -48,7 +48,7 @@ async function linkAccount(tokens, patreon_id, discordId) {
     );
     if (!user)
         throw new Error("Failed linking");
-    const resp = await got.post(`${patreonConfig.service_url}/user/${discordId}/link/${patreon_id}`, {
+    const resp = await got.post(`${patreonConfig.service_url}/user/${discordId}/updatetier/${patreon_id}`, {
         responseType: 'json',
         resolveBodyOnly: true,
         headers: {
