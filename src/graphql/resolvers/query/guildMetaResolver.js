@@ -14,10 +14,12 @@ function makeGuildMeta(guild) {
   };
 }
 
-async function resolve(parent, _args, { botClient }) {
+async function resolve(parent, _args, { data }) {
   const id = parent.id.toString();
 
-  const { body: discordGuild } = await botClient.getGuild(id, true);
+  const discordGuild = await data.getDiscordGuild(id);
+  if (!discordGuild) throw new Error("guildnotfound");
+
   return makeGuildMeta(discordGuild);
 }
 

@@ -1,5 +1,3 @@
-const { Long } = require("mongodb");
-
 const getPermissionGroups = (groups) => (
   groups.map(({id, name, roleIds, permissions}) => ({
     id,
@@ -60,8 +58,8 @@ function makeGuildData(guild) {
   };
 }
 
-async function resolve(_parent, { id }, { db }) {
-  const guild = await db.guilds.findOne({ _id: Long.fromString(id) });
+async function resolve(_parent, { id }, { data }) {
+  const guild = await data.getSingleGuild(id);
   if (!guild) throw new Error("guildnotfound");
   return makeGuildData(guild);
 }
