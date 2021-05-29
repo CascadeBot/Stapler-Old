@@ -113,7 +113,7 @@ const permissionMiddleware = {
         Guild: hasAccessIdVariable
     },
     Mutation: {
-        updateGuildSettings: hasAccessIdVariable
+        UpdateGuildSettings: hasAccessIdVariable
     }
 }
 
